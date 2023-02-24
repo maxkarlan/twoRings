@@ -65,13 +65,13 @@ for (var i = 0; i < numCubes; i++) {
 // Create the inner circle of 20 spheres
 var innerCircleRadius = 5;
 var innerSpheres = []; 
-for (var i = 0; i < 40; i++) {
+for (var i = 0; i < 80; i++) {
     var hue = THREE.Math.randFloat(0.5, 0.8);
     var saturation = THREE.Math.randFloat(0.5, 1.0);
     var lightness = THREE.Math.randFloat(0.3, 0.7);
     var color = new THREE.Color().setHSL(hue, saturation, lightness);
     var sphere = new THREE.Mesh(new THREE.SphereGeometry(sphereRadius, 32, 32), new THREE.MeshPhongMaterial({ color: color }));
-    var angle = (i / 20) * Math.PI * 1;
+    var angle = (i / 20) * Math.PI * .5;
     sphere.position.x = Math.cos(angle) * innerCircleRadius;
     sphere.position.y = 5;
     sphere.position.z = Math.sin(angle) * innerCircleRadius;
@@ -79,17 +79,33 @@ for (var i = 0; i < 40; i++) {
     scene.add(sphere);
 }
       
-      // Create a sphere geometry and material
-var geometry = new THREE.SphereGeometry(5, 32, 32);
+// Create a sphere geometry
+const geometry = new THREE.SphereGeometry(5, 32, 32);
+
+// Create a CanvasTexture object with a gradient fill
+const canvas = document.createElement('canvas');
+canvas.width = 256;
+canvas.height = 256;
+const context = canvas.getContext('2d');
+const gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+gradient.addColorStop(0, 'blue');
+gradient.addColorStop(1, 'purple');
+context.fillStyle = gradient;
+context.fillRect(0, 0, canvas.width, canvas.height);
+const gradientTexture = new THREE.CanvasTexture(canvas);
+
+// Set the material's gradient texture and map properties
 var material = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    wireframe: true
+  map: gradientTexture
 });
 
-// Create a mesh with the geometry and material, and add it to the scene
+// Set the material's opacity and transparent properties
+material.opacity = 0.6;
+material.transparent = true;      
+      
+// Create a mesh and add it to the scene
 var sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
-
 
 // Create an ambient light
 var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
