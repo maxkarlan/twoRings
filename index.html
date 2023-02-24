@@ -209,6 +209,13 @@ function onDocumentMouseMove(event) {
     mouseY = (event.clientY - windowHalfY) / 10;
 }
       
+// Set up the event listener for scrolling
+let scrollSpeed = 0.1;
+window.addEventListener('wheel', (event) => {
+  const delta = event.deltaY;
+  camera.position.z += delta * scrollSpeed;
+});
+      
 
 animate();
 
