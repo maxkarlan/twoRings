@@ -71,23 +71,6 @@ for (var i = 0; i < 20; i++) {
     scene.add(sphere);
 }
     
-// Add 100 small red cubes moving back and forth between different spheres
-var numCubes = 100;
-var cubes = [];
-for (var i = 0; i < numCubes; i++) {
-    var cube = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshPhongMaterial({ color: 0xff0000 }));
-    var startSphere = spheres[THREE.Math.randInt(0, spheres.length - 1)];
-    var endSphere = spheres[THREE.Math.randInt(0, spheres.length - 1)];
-    cube.userData = {
-        startSphere: startSphere,
-        endSphere: endSphere,
-        progress: 0,
-        direction: 1
-    };
-    cube.position.copy(startSphere.position);
-    cubes.push(cube);
-    scene.add(cube);
-}
 
 
       
@@ -204,36 +187,7 @@ function animate() {
         sphere.position.y = offset;
     }
   
-for (var i = 0; i < cubes.length; i++) {
-    var cube = cubes[i];
-    var closestSphere = spheres[0];
-    var closestDistance = cube.position.distanceTo(closestSphere.position);
-    for (var j = 1; j < spheres.length; j++) {
-        var sphere = spheres[j];
-        var distance = cube.position.distanceTo(sphere.position);
-        if (distance < closestDistance) {
-            closestSphere = sphere;
-            closestDistance = distance;
-        }
-    }
-    if (cube.userData.targetSphere == null) {
-        cube.userData.targetSphere = closestSphere;
-    }
-    if (cube.userData.targetSphere != closestSphere) {
-        cube.userData.targetSphere = closestSphere;
-        cube.userData.time = 0;
-    }
-    if (cube.userData.time == null) {
-        cube.userData.time = 0;
-    }
-    cube.userData.time += 0.05;
-    var noise = new THREE.Vector3(
-        THREE.Math.randFloat(-1, 1),
-        THREE.Math.randFloat(-1, 1),
-        THREE.Math.randFloat(-1, 1)
-    ).normalize().multiplyScalar(Math.sin(cube.userData.time) * 2 + 1);
-    cube.position.lerpVectors(cube.userData.targetSphere.position, closestSphere.position.clone().add(noise), cube.userData.time);
-}
+
 
 
 
