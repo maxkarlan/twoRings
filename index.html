@@ -30,17 +30,19 @@ document.body.appendChild(renderer.domElement);
             const intervalLength = .01; // interval length in seconds
             let lastAppearTime = -Infinity;
 
-            for (let i = 0; i < 100; i++) {
-                const startPoint = new THREE.Vector3(
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20
-                );
-                const endPoint = new THREE.Vector3(
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20
-                );
+for (let i = 0; i < 100; i++) {
+    const startPoint = new THREE.Vector3(
+        Math.random() * 10 - 5, // Limit x-coordinate to [-5, 5]
+        Math.random() * 10 - 5, // Limit y-coordinate to [-5, 5]
+        Math.random() * 10 - 5, // Limit z-coordinate to [-5, 5]
+    ).normalize().multiplyScalar(5); // Restrict the point to the surface of a sphere with radius 5
+
+    const endPoint = new THREE.Vector3(
+        Math.random() * 10 - 5, // Limit x-coordinate to [-5, 5]
+        Math.random() * 10 - 5, // Limit y-coordinate to [-5, 5]
+        Math.random() * 10 - 5, // Limit z-coordinate to [-5, 5]
+    ).normalize().multiplyScalar(5); // Restrict the point to the surface of a sphere with radius 5
+
                 const lineGeometry = new THREE.BufferGeometry().setFromPoints([startPoint, endPoint]);
                 const lineMaterial = new THREE.LineBasicMaterial({color: Math.random() * 0xffffff});
                 const line = new THREE.Line(lineGeometry, lineMaterial);
@@ -169,7 +171,7 @@ function animate() {
 
                 for (let i = 0; i < lineGroup.children.length; i++) {
                     const line = lineGroup.children[i];
-                    const flickerRate = i / 100;
+                    const flickerRate = i / 1000;
 
                     if (line.visible && flickerRate + count % 1 > 0.5) {
                         line.visible = false;
