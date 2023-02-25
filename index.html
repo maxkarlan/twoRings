@@ -22,8 +22,35 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHei
 camera.position.z = 30;
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement); 
+      
+ // Create 100 line segments and add them to the scene
+            const lineGroup = new THREE.Group();
 
+            const intervalLength = .01; // interval length in seconds
+            let lastAppearTime = -Infinity;
+
+            for (let i = 0; i < 100; i++) {
+                const startPoint = new THREE.Vector3(
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20
+                );
+                const endPoint = new THREE.Vector3(
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20
+                );
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints([startPoint, endPoint]);
+                const lineMaterial = new THREE.LineBasicMaterial({color: Math.random() * 0xffffff});
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                line.visible = false;
+                lineGroup.add(line);
+            }
+
+            scene.add(lineGroup);
+
+      
 // Create the circle of 20 spheres
 var circleRadius = 10;
 var sphereRadius = 0.5;
@@ -128,7 +155,28 @@ scene.add(directionalLight2.target);
 
 // Animate the spheres falling and rising in a wave motion and make random spheres flicker
 var time = 0;
+let count = 0;
 function animate() {
+                count += 0.1;
+
+                if (Date.now() - lastAppearTime > intervalLength * 1000) {
+                    // Show a line segment
+                    const index = Math.floor(Math.random() * lineGroup.children.length);
+                    const line = lineGroup.children[index];
+                    line.visible = true;
+                    lastAppearTime = Date.now();
+                }
+
+                for (let i = 0; i < lineGroup.children.length; i++) {
+                    const line = lineGroup.children[i];
+                    const flickerRate = i / 100;
+
+                    if (line.visible && flickerRate + count % 1 > 0.5) {
+                        line.visible = false;
+                    }
+                }
+
+                renderer.render(scene, camera);
     requestAnimationFrame(animate);
 
     // Rotate the circles along the x axis
@@ -176,7 +224,7 @@ for (var i = 0; i < cubes.length; i++) {
     if (cube.userData.time == null) {
         cube.userData.time = 0;
     }
-    cube.userData.time += 0.005;
+    cube.userData.time += 0.05;
     var noise = new THREE.Vector3(
         THREE.Math.randFloat(-1, 1),
         THREE.Math.randFloat(-1, 1),
